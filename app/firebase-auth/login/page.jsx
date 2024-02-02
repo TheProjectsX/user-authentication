@@ -3,7 +3,11 @@
 import { useState } from "react";
 import Link from "next/link";
 
-import { useSignInWithEmailAndPassword } from "react-firebase-hooks/auth";
+import {
+  useAuthState,
+  useSignInWithEmailAndPassword,
+  useSignInWithGoogle,
+} from "react-firebase-hooks/auth";
 import { auth } from "@/app/firebase/config";
 import { useRouter } from "next/navigation";
 import { UserAuth } from "@/app/Context/AuthContext";
@@ -15,13 +19,14 @@ const SignIn = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [notice, setNotice] = useState("");
 
-  const [SignInWithEmailAndPassword, user, l, error] =
-    useSignInWithEmailAndPassword(auth);
+  const [user] = useAuthState(auth);
   // Check if User Signed In or Not
-
   if (user) {
     router.push("/firebase-auth");
   }
+
+  const [SignInWithEmailAndPassword] = useSignInWithEmailAndPassword(auth);
+  const [signInWithGoogle] = useSignInWithGoogle(auth);
 
   const handleSignIn = async () => {
     try {
@@ -86,10 +91,17 @@ const SignIn = () => {
         </div>
 
         <button
-          className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600 focus:outline-none"
+          className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600 focus:outline-none mb-4"
           onClick={handleSignIn}
         >
           Sign In
+        </button>
+
+        <button
+          className="w-full bg-red-500 text-white py-2 rounded hover:bg-red-600 focus:outline-none"
+          onClick={() => signInWithGoogle()}
+        >
+          Sign In with Google
         </button>
 
         {notice && <div className="mt-4 text-sm text-red-500">{notice}</div>}

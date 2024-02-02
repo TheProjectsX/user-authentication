@@ -5,7 +5,9 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 import {
+  useAuthState,
   useCreateUserWithEmailAndPassword,
+  useSignInWithGoogle,
   useUpdateProfile,
 } from "react-firebase-hooks/auth";
 import { auth } from "@/app/firebase/config";
@@ -20,13 +22,15 @@ const SignUp = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [notice, setNotice] = useState("");
 
-  const [CreateUserWithEmailAndPassword, user] =
-    useCreateUserWithEmailAndPassword(auth);
-
+  const [user] = useAuthState(auth);
   // Check if User Signed In or Not
   if (user) {
     router.push("/firebase-auth");
   }
+
+  const [CreateUserWithEmailAndPassword] =
+    useCreateUserWithEmailAndPassword(auth);
+  const [signInWithGoogle] = useSignInWithGoogle(auth);
 
   const [updateProfile] = useUpdateProfile(auth);
 
@@ -134,7 +138,7 @@ const SignUp = () => {
             Re-type Password
           </label>
           <input
-            type={showPassword ? "text" : "password"}
+            type="password"
             id="retypePassword"
             className="w-full px-3 py-2 rounded bg-gray-700 text-white focus:outline-none"
             placeholder="Re-enter your password"
@@ -144,10 +148,17 @@ const SignUp = () => {
         </div>
 
         <button
-          className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600 focus:outline-none"
+          className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600 focus:outline-none mb-4"
           onClick={handleSignUp}
         >
           Sign Up
+        </button>
+
+        <button
+          className="w-full bg-red-500 text-white py-2 rounded hover:bg-red-600 focus:outline-none"
+          onClick={() => signInWithGoogle()}
+        >
+          Sign Up with Google
         </button>
 
         {notice && <div className="mt-4 text-sm text-red-500">{notice}</div>}
@@ -155,7 +166,7 @@ const SignUp = () => {
         <div className="mt-4 text-sm text-gray-400">
           Already have an account?{" "}
           <Link href="/firebase-auth/login" className="text-blue-400">
-            Login
+            Sign In
           </Link>
         </div>
       </div>
