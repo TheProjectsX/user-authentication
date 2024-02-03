@@ -138,7 +138,7 @@ const SignUp = () => {
             Re-type Password
           </label>
           <input
-            type="password"
+            type={showPassword ? "text" : "password"}
             id="retypePassword"
             className="w-full px-3 py-2 rounded bg-gray-700 text-white focus:outline-none"
             placeholder="Re-enter your password"
